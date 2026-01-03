@@ -1,225 +1,95 @@
-import React, { useState, useEffect } from ‘react’;
-import { Check, Plus, Calendar } from ‘lucide-react’;
+<!DOCTYPE html>
 
-export default function ThreeTasks() {
-const [tasks, setTasks] = useState([]);
-const [input, setInput] = useState(’’);
-const [stats, setStats] = useState({ streak: 0, rate: 0 });
-
-useEffect(() => {
-const saved = localStorage.getItem(‘tasks’);
-const savedStats = localStorage.getItem(‘stats’);
-if (saved) setTasks(JSON.parse(saved));
-if (savedStats) setStats(JSON.parse(savedStats));
-}, []);
-
-const addTask = () => {
-if (input.trim() && tasks.length < 3) {
-const newTasks = […tasks, { text: input, done: false, id: Date.now() }];
-setTasks(newTasks);
-localStorage.setItem(‘tasks’, JSON.stringify(newTasks));
-setInput(’’);
-}
-};
-
-const toggle = (id) => {
-const newTasks = tasks.map(t => t.id === id ? { …t, done: !t.done } : t);
-setTasks(newTasks);
-localStorage.setItem(‘tasks’, JSON.stringify(newTasks));
-
-```
-if (newTasks.every(t => t.done) && newTasks.length === 3) {
-  const newStats = { streak: stats.streak + 1, rate: stats.rate + 1 };
-  setStats(newStats);
-  localStorage.setItem('stats', JSON.stringify(newStats));
-}
-```
-
-};
-
-const reset = () => {
-setTasks([]);
-localStorage.setItem(‘tasks’, JSON.stringify([]));
-};
-
-const complete = tasks.filter(t => t.done).length;
-const progress = (complete / 3) * 100;
-
-return (
-<div style={{
-minHeight: ‘100vh’,
-background: ‘linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)’,
-padding: ‘2rem’,
-fontFamily: ‘-apple-system, BlinkMacSystemFont, “Segoe UI”, sans-serif’,
-color: ‘#fff’
-}}>
-<div style={{ maxWidth: ‘480px’, margin: ‘0 auto’ }}>
-
-```
-    <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-      <h1 style={{ 
-        fontSize: '1.5rem', 
-        fontWeight: '300', 
-        letterSpacing: '0.1em',
-        margin: 0,
-        opacity: 0.6,
-        textTransform: 'uppercase'
-      }}>Three</h1>
-      <div style={{
-        fontSize: '6rem',
-        fontWeight: '200',
-        margin: '1rem 0',
-        lineHeight: 1
-      }}>{complete}/3</div>
-      <div style={{
-        height: '2px',
-        background: '#333',
-        borderRadius: '1px',
-        overflow: 'hidden',
-        margin: '2rem auto',
-        maxWidth: '200px'
-      }}>
-        <div style={{
-          height: '100%',
-          background: 'linear-gradient(90deg, #fff 0%, #888 100%)',
-          width: `${progress}%`,
-          transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-        }} />
-      </div>
-    </div>
-
-    {tasks.map(task => (
-      <div key={task.id} 
-        onClick={() => toggle(task.id)}
-        style={{
-          padding: '1.5rem',
-          marginBottom: '1px',
-          background: task.done ? '#1a1a1a' : '#222',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem',
-          transition: 'all 0.3s ease',
-          borderLeft: task.done ? '3px solid #fff' : '3px solid transparent'
-        }}>
-        <div style={{
-          width: '20px',
-          height: '20px',
-          border: '1px solid #555',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: task.done ? '#fff' : 'transparent',
-          transition: 'all 0.3s ease'
-        }}>
-          {task.done && <Check size={14} color="#000" strokeWidth={3} />}
-        </div>
-        <span style={{
-          flex: 1,
-          opacity: task.done ? 0.4 : 1,
-          textDecoration: task.done ? 'line-through' : 'none',
-          fontSize: '1rem',
-          fontWeight: '300',
-          letterSpacing: '0.02em'
-        }}>{task.text}</span>
-      </div>
-    ))}
-
-    {tasks.length < 3 && (
-      <div style={{
-        padding: '1.5rem',
-        background: '#1a1a1a',
-        display: 'flex',
-        gap: '1rem',
-        marginTop: tasks.length ? '1px' : 0
-      }}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && addTask()}
-          placeholder="Add task"
-          style={{
-            flex: 1,
-            background: 'transparent',
-            border: 'none',
-            color: '#fff',
-            fontSize: '1rem',
-            outline: 'none',
-            fontWeight: '300'
-          }}
-        />
-        <button onClick={addTask} style={{
-          background: 'transparent',
-          border: '1px solid #333',
-          color: '#fff',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'all 0.2s ease'
-        }}>
-          <Plus size={18} />
-        </button>
-      </div>
-    )}
-
-    {complete === 3 && (
-      <div style={{
-        marginTop: '3rem',
-        padding: '2rem',
-        background: '#fff',
-        color: '#000',
-        textAlign: 'center',
-        fontWeight: '300',
-        letterSpacing: '0.1em'
-      }}>
-        DAY COMPLETE
-      </div>
-    )}
-
-    <div style={{
-      marginTop: '4rem',
-      display: 'flex',
-      gap: '2rem',
-      justifyContent: 'center',
-      opacity: 0.4,
-      fontSize: '0.9rem',
-      fontWeight: '300'
-    }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{stats.streak}</div>
-        <div style={{ textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.1em' }}>Streak</div>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{stats.rate}</div>
-        <div style={{ textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '0.1em' }}>Total</div>
-      </div>
-    </div>
-
-    {tasks.length === 3 && (
-      <button onClick={reset} style={{
-        marginTop: '3rem',
-        width: '100%',
-        padding: '1rem',
-        background: 'transparent',
-        border: '1px solid #333',
-        color: '#666',
-        cursor: 'pointer',
-        fontSize: '0.8rem',
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        fontWeight: '300'
-      }}>
-        Reset Day
-      </button>
-    )}
-  </div>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fff;min-height:100vh;padding:2rem}
+.container{max-width:480px;margin:0 auto}
+.header{text-align:center;margin-bottom:4rem}
+.title{font-size:1.5rem;font-weight:300;letter-spacing:.1em;opacity:.6;text-transform:uppercase}
+.count{font-size:6rem;font-weight:200;margin:1rem 0;line-height:1}
+.progress{height:2px;background:#333;border-radius:1px;overflow:hidden;margin:2rem auto;max-width:200px}
+.bar{height:100%;background:linear-gradient(90deg,#fff,#888);width:0;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.task{padding:1.5rem;margin-bottom:1px;background:#222;cursor:pointer;display:flex;align-items:center;gap:1rem;transition:all .3s;border-left:3px solid transparent}
+.task.done{background:#1a1a1a;border-left-color:#fff}
+.check{width:20px;height:20px;border:1px solid #555;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.task.done .check{background:#fff}
+.text{flex:1;font-weight:300;letter-spacing:.02em;transition:all .3s}
+.task.done .text{opacity:.4;text-decoration:line-through}
+.input-row{padding:1.5rem;background:#1a1a1a;display:flex;gap:1rem;margin-top:1px}
+input{flex:1;background:transparent;border:none;color:#fff;font-size:1rem;outline:none;font-weight:300}
+button{background:transparent;border:1px solid #333;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.complete{margin-top:3rem;padding:2rem;background:#fff;color:#000;text-align:center;font-weight:300;letter-spacing:.1em}
+.stats{margin-top:4rem;display:flex;gap:2rem;justify-content:center;opacity:.4;font-weight:300}
+.stat{text-align:center}
+.stat-num{font-size:1.5rem;margin-bottom:.5rem}
+.stat-label{text-transform:uppercase;font-size:.7rem;letter-spacing:.1em}
+.reset{margin-top:3rem;width:100%;padding:1rem;background:transparent;border:1px solid #333;color:#666;cursor:pointer;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;font-weight:300}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="title">Three</div>
+<div class="count" id="count">0/3</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
 </div>
-```
-
-);
+<div id="tasks"></div>
+<div class="input-row" id="input-row">
+<input id="input" placeholder="Add task" />
+<button onclick="add()">+</button>
+</div>
+<div class="complete hidden" id="complete">DAY COMPLETE</div>
+<div class="stats">
+<div class="stat"><div class="stat-num" id="streak">0</div><div class="stat-label">Streak</div></div>
+<div class="stat"><div class="stat-num" id="total">0</div><div class="stat-label">Total</div></div>
+</div>
+<button class="reset hidden" id="reset" onclick="reset()">Reset Day</button>
+</div>
+<script>
+let tasks=JSON.parse(localStorage.getItem('tasks')||'[]');
+let stats=JSON.parse(localStorage.getItem('stats')||'{"streak":0,"total":0}');
+function render(){
+let done=tasks.filter(t=>t.done).length;
+document.getElementById('count').textContent=done+'/3';
+document.getElementById('bar').style.width=(done/3*100)+'%';
+document.getElementById('tasks').innerHTML=tasks.map((t,i)=>`<div class="task ${t.done?'done':''}" onclick="toggle(${i})"><div class="check">${t.done?'✓':''}</div><div class="text">${t.text}</div></div>`).join('');
+document.getElementById('input-row').className=tasks.length<3?'input-row':'input-row hidden';
+document.getElementById('complete').className=done===3&&tasks.length===3?'complete':'complete hidden';
+document.getElementById('reset').className=tasks.length===3?'reset':'reset hidden';
+document.getElementById('streak').textContent=stats.streak;
+document.getElementById('total').textContent=stats.total;
 }
+function add(){
+let val=document.getElementById('input').value.trim();
+if(val&&tasks.length<3){
+tasks.push({text:val,done:false});
+localStorage.setItem('tasks',JSON.stringify(tasks));
+document.getElementById('input').value='';
+render();
+}
+}
+function toggle(i){
+tasks[i].done=!tasks[i].done;
+localStorage.setItem('tasks',JSON.stringify(tasks));
+if(tasks.every(t=>t.done)&&tasks.length===3){
+stats.streak++;stats.total++;
+localStorage.setItem('stats',JSON.stringify(stats));
+}
+render();
+}
+function reset(){
+tasks=[];
+localStorage.setItem('tasks',JSON.stringify(tasks));
+render();
+}
+document.getElementById('input').addEventListener('keypress',e=>{if(e.key==='Enter')add()});
+render();
+</script>
+</body>
+</html>
